@@ -1,0 +1,85 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+data = pd.read_csv('Unemployment_in_India.csv')
+data.head()
+
+data.tail(20)
+
+data.isnull().sum()
+
+data.dropna()
+
+data.info()
+
+fig = plt.figure(dpi=500)
+ax = fig.add_axes([0,0,1,1])
+ax.bar(data['Estimated Unemployment Rate (%)'],data['Estimated Labour Participation Rate (%)'])
+plt.xlabel('\nEstimated Unemployment Rate (%)')
+plt.ylabel('Estimated Labour Participation Rate (%)\n')
+plt.title('\nLabor VS Unemployement Rate\n')
+plt.show()
+
+fig = plt.figure(dpi=500)
+ax = fig.add_axes([0,0,1,1])
+ax.scatter(data['Estimated Unemployment Rate (%)'],data['Estimated Labour Participation Rate (%)'])
+plt.xlabel('\nEstimated Unemployment Rate (%)')
+plt.ylabel('Estimated Labour Participation Rate (%)\n')
+plt.title('\nLabor VS Unemployement Rate\n')
+plt.show()
+
+***
+
+fig = plt.figure(dpi=500)
+ax = fig.add_axes([0,0,1,1])
+ax.scatter(data['Estimated Unemployment Rate (%)'],data['Estimated Employed'])
+plt.xlabel('\nEstimated Unemployment Rate (%)')
+plt.ylabel('Estimated Employed\n')
+plt.title('\nEstimated Employed VS Unemployement Rate\n')
+plt.show()
+
+data.rename(columns={'Estimated Unemployment Rate (%)': 'EUR', 'Estimated Labour Participation Rate (%)': 'ELR'}, inplace=True)
+
+## Perform One-Hot-Encoding
+
+# Get one hot encoding of columns B
+one_hot = pd.get_dummies(data['Region'])
+
+# Drop column B as it is now encoded
+data = data.drop('Region',axis = 1)
+
+# Join the encoded df
+data = data.join(one_hot)
+data
+
+
+
+data['Area'] = data['Area'].str[0]
+data
+
+
+
+data.loc[(data['Area'] == 'R'), 'Area'] = 0
+data.loc[(data['Area'] == 'U'), 'Area'] = 1
+data
+
+
+fig = plt.figure(dpi=500)
+#ax = fig.add_axes([0,0,1,1])
+plt.bar(data['Area'],data['Estimated Employed'])
+plt.xlabel('\nArea\n(0=Rural, 1=Urban)')
+plt.ylabel('Estimated Employed\n')
+plt.title('\nEstimated Employed VS Area\n')
+plt.show()
+
+
+
+fig = plt.figure(dpi=500)
+ax = fig.add_axes([0,0,1,1])
+ax.scatter(data['Area'],data['EUR'])
+plt.xlabel('\nArea\n(0=Rural, 1=Urban)')
+plt.ylabel('Estimated Unployement Rate (%)\n')
+plt.title('\nEstimated Employed VS Area\n')
+plt.show()
